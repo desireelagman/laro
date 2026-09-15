@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starbucks Barista Training Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">☕</div>
+            <div>
+                <h1>Starbucks Barista Simulator</h1>
+                <div style="font-size: 0.75rem; color: var(--sb-accent-gold);">Training Station #4</div>
+            </div>
+        </div>
+
+        <!-- Mode Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-btn active" onclick="switchView('game', event)">🎮 Training Game</button>
+            <button class="nav-btn" onclick="switchView('simulator', event)">🧪 Free Simulator</button>
+            <button class="nav-btn" onclick="switchView('learn', event)">📖 Learn Recipes</button>
+        </nav>
+
+        <div class="stats-container" id="game-stats-header">
+            <div class="stat-item">Time: <span id="timer-display">02:30</span></div>
+            <div class="stat-item">Score: <span id="score-display">0</span></div>
+            <div class="stat-item">Streak: <span id="streak-display">0</span>🔥</div>
+            <div class="stat-item">Best: <span id="best-display">0</span>🏆</div>
+        </div>
+    </header>
+
+    <!-- VIEW 1: TRAINING GAME -->
+    <div class="view-section active" id="view-game">
+        <div class="game-container">
+        <sidebar>
+            <div class="sidebar-title">Ingredient Inventory</div>
+            <div class="sidebar-search">
+                <input type="text" id="ingredient-search" placeholder="🔍 Search ingredients…" oninput="filterIngredients('game', this.value)">
+            </div>
+            <div class="inventory-scroll" id="inventory-scroll-game">
+
+                <!-- Cups (TGV Standard) -->
+                <details class="inventory-category cat-cup">
+                    <summary><h3>Cups <span class="cat-count">3</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Tall Cup')">🥤 Tall Cup</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Grande Cup')">🥤 Grande Cup</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Venti Cup')">🥤 Venti Cup</button>
+                    </div>
+                </details>
+
+                <!-- Bases & Milks -->
+                <details class="inventory-category cat-milk">
+                    <summary><h3>Bases / Milks <span class="cat-count">8</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Milk')">🥛 Milk</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Oat Milk')">🌾 Oat Milk</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Almond Milk')">🌰 Almond Milk</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Coconut Milk')">🥥 Coconut Milk</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Breve')">🥛 Breve</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Water')">💧 Water</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Lemonade')">🍋 Lemonade</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Coconut Water')">🌴 Coconut Water</button>
+                    </div>
+                </details>
+
+                <!-- Teas & Concentrates -->
+                <details class="inventory-category cat-tea">
+                    <summary><h3>Teas & Concentrates <span class="cat-count">8</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Sachet')">👝 Sachet</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Hot Water')">♨️ Hot Water</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Steep Tea')">⏳ Steep Tea</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Teavana Black Tea')">🫖 Teavana Black Tea</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Black Tea Concentrate')">📦 Black Tea Concentrate</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Hibiscus Tea Concentrate')">🌺 Hibiscus Tea Concentrate</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Chai Concentrate')">☕ Chai Concentrate</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Cold Brew')">🧊 Cold Brew</button>
+                    </div>
+                </details>
+
+                <!-- Refresher Bases & Fruits -->
+                <details class="inventory-category cat-fruit">
+                    <summary><h3>Refreshers & Mix-ins <span class="cat-count">7</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Strawberry Base')">🍓 Strawberry Base</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Mango Dragonfruit Base')">🥭 Mango Dragonfruit Base</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Ruby Grapefruit Sauce')">🍊 Ruby Grapefruit Sauce</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Pearls')">🧋 Pearls</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Coffee Jelly')">🍮 Coffee Jelly</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Dried Strawberry')">✨ Dried Strawberry</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Dried Mango')">✨ Dried Mango</button>
+                    </div>
+                </details>
+
+                <!-- Syrups & Sweeteners -->
+                <details class="inventory-category cat-syrup">
+                    <summary><h3>Syrups <span class="cat-count">5</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Vanilla Syrup')">🍯 Vanilla Syrup</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Caramel Syrup')">🍮 Caramel Syrup</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Hazelnut Syrup')">🌰 Hazelnut Syrup</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Sugar Cane')">🎋 Sugar Cane</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Syrup')">⚡ Syrup <small>(any flavor)</small></button>
+                    </div>
+                </details>
+
+                <!-- Powders, Roast & Espresso -->
+                <details class="inventory-category cat-coffee">
+                    <summary><h3>Coffee & Powders <span class="cat-count">6</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Matcha Powder')">🍵 Matcha Powder</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Mocha Powder')">🍫 Mocha Powder</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Frappuccino Roast')">⚡ Frappuccino Roast</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Espresso Shot')">☕ Espresso Shot</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Ristretto Shots')">☕ Ristretto Shots</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Coffee')">☕ Coffee</button>
+                    </div>
+                </details>
+
+                <!-- Frappuccino Bases -->
+                <details class="inventory-category cat-frapp">
+                    <summary><h3>Frappuccino Items <span class="cat-count">6</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Coffee Frapp Syrup Base')">⚡ Coffee Frapp Syrup Base</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Frapp Cream Base')">🥛 Frapp Cream Base</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Caramel Drink Base')">🍮 Caramel Drink Base</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Mocha Sauce')">🍫 Mocha Sauce</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Frapp Chips')">🍪 Frapp Chips</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Blend')">🌀 Blend</button>
+                    </div>
+                </details>
+
+                <!-- Toppings -->
+                <details class="inventory-category cat-topping">
+                    <summary><h3>Toppings & Ice <span class="cat-count">6</span></h3></summary>
+                    <div class="item-grid">
+                        <button class="ingredient-btn" onclick="addIngredient('Ice')">🧊 Ice</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Whipped Cream')">☁️ Whipped Cream</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Sweet Whipped Cream')">☁️ Sweet Whipped Cream</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Caramel Drizzle')">✨ Caramel Drizzle</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Mocha Drizzle')">🍫 Mocha Drizzle</button>
+                        <button class="ingredient-btn" onclick="addIngredient('Matcha Premix')">🍵 Matcha Premix</button>
+                    </div>
+                </details>
+
+                <p class="no-results-text" id="no-results-game" style="display:none;">No ingredients match your search.</p>
+            </div>
+        </sidebar>
+
+            <div class="workspace" id="workspace-area">
+                <div class="ticket-card" id="ticket-card">
+                    <div class="ticket-header">
+                        <span class="ticket-title">Incoming Order Ticket</span>
+                        <span id="order-counter" style="font-size: 0.85rem; font-weight: bold; color: var(--text-muted);">Order #1</span>
+                    </div>
+                    <div class="drink-name" id="ticket-drink-name">Loading Drink...</div>
+                    <ul class="recipe-steps" id="ticket-recipe-list"></ul>
+                </div>
+
+                <div class="workbench">
+                    <div class="workbench-header">
+                        <div>
+                            <span class="workbench-title">Drink Assembly Workbench</span>
+                            <div class="workbench-subtitle">Build bottom-to-top, in the order shown on the ticket</div>
+                        </div>
+                        <span class="workbench-progress" id="workbench-progress">0 / 0 steps</span>
+                    </div>
+
+                    <div class="assembly-stage">
+                        <div class="cup-shell" id="cup-shell" data-size="none">
+                            <div class="cup-rim">
+                                <span class="cup-size-label" id="cup-size-label">Select a cup</span>
+                            </div>
+                            <div class="cup-body" id="build-slots">
+                                <span class="empty-slot-text">Your cup is empty. Click inventory items to build.</span>
+                            </div>
+                            <div class="cup-base"></div>
+                        </div>
+                    </div>
+
+                    <div class="workbench-actions">
+                        <button class="btn btn-clear" onclick="clearWorkbench()">Clear Workspace</button>
+                        <button class="btn btn-submit" onclick="submitOrder()">Submit Order 🚀</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: FREE SIMULATOR (SANDBOX) -->
+    <div class="view-section" id="view-simulator">
+        <div class="game-container">
+            <sidebar>
+                <div class="sidebar-title">Simulator Inventory</div>
+                <div class="sidebar-search">
+                    <input type="text" id="sim-ingredient-search" placeholder="🔍 Search ingredients…" oninput="filterIngredients('sim', this.value)">
+                </div>
+                <div class="inventory-scroll" id="inventory-scroll-sim">
+                    <div class="inventory-category cat-cup">
+                        <h3>Cups <span class="cat-count">3</span></h3>
+                        <div class="item-grid">
+                            <button class="ingredient-btn" onclick="addSimIngredient('Tall Cup')">🥤 Tall Cup</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Grande Cup')">🥤 Grande Cup</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Venti Cup')">🥤 Venti Cup</button>
+                        </div>
+                    </div>
+                    <div class="inventory-category cat-milk">
+                        <h3>Bases / Milks <span class="cat-count">4</span></h3>
+                        <div class="item-grid">
+                            <button class="ingredient-btn" onclick="addSimIngredient('Milk')">🥛 Milk</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Oat Milk')">🌾 Oat Milk</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Almond Milk')">🌰 Almond Milk</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Water')">💧 Water</button>
+                        </div>
+                    </div>
+                    <div class="inventory-category cat-syrup">
+                        <h3>Syrups <span class="cat-count">3</span></h3>
+                        <div class="item-grid">
+                            <button class="ingredient-btn" onclick="addSimIngredient('Vanilla Syrup')">🍯 Vanilla Syrup</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Caramel Syrup')">🍮 Caramel Syrup</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Hazelnut Syrup')">🌰 Hazelnut Syrup</button>
+                        </div>
+                    </div>
+                    <div class="inventory-category cat-coffee">
+                        <h3>Powders / Roast <span class="cat-count">3</span></h3>
+                        <div class="item-grid">
+                            <button class="ingredient-btn" onclick="addSimIngredient('Matcha Powder')">🍵 Matcha Powder</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Mocha Powder')">🍫 Mocha Powder</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Frappuccino Roast')">⚡ Frappuccino Roast</button>
+                        </div>
+                    </div>
+                    <div class="inventory-category cat-topping">
+                        <h3>Toppings <span class="cat-count">3</span></h3>
+                        <div class="item-grid">
+                            <button class="ingredient-btn" onclick="addSimIngredient('Whipped Cream')">☁️ Whipped Cream</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Caramel Drizzle')">✨ Caramel Drizzle</button>
+                            <button class="ingredient-btn" onclick="addSimIngredient('Frapp Chips')">🍪 Frapp Chips</button>
+                        </div>
+                    </div>
+                    <p class="no-results-text" id="no-results-sim" style="display:none;">No ingredients match your search.</p>
+                </div>
+            </sidebar>
+
+            <div class="workspace">
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <span class="ticket-title">Sandbox Mode</span>
+                    </div>
+                    <div class="drink-name">Free Barista Station</div>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Experiment freely! Combine any ingredients to test recipe ideas without time restrictions or penalties.</p>
+                </div>
+
+                <div class="workbench">
+                    <div class="workbench-header">
+                        <div>
+                            <span class="workbench-title">Custom Creation Workbench</span>
+                            <div class="workbench-subtitle">No required order — experiment freely</div>
+                        </div>
+                    </div>
+
+                    <div class="assembly-stage">
+                        <div class="cup-shell" id="sim-cup-shell" data-size="none">
+                            <div class="cup-rim">
+                                <span class="cup-size-label" id="sim-cup-size-label">Select a cup</span>
+                            </div>
+                            <div class="cup-body" id="sim-build-slots">
+                                <span class="empty-slot-text">Workspace empty. Build your custom drink!</span>
+                            </div>
+                            <div class="cup-base"></div>
+                        </div>
+                    </div>
+
+                    <div class="workbench-actions">
+                        <button class="btn btn-clear" onclick="clearSimWorkbench()">Clear Workspace</button>
+                        <button class="btn btn-submit" onclick="testSimRecipe()">Inspect Drink 🔍</button>
+                    </div>
+                    <div id="sim-result-box" style="margin-top: 10px; font-weight: bold; color: var(--sb-green); text-align: center;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 3: LEARN / RECIPE GUIDE -->
+    <div class="view-section" id="view-learn">
+        <div class="learn-container">
+            <h2>Barista Recipe Master Guide</h2>
+            <p class="learn-subtitle">Study the official recipe standards before stepping onto the active training floor.</p>
+            <div class="recipe-grid" id="recipe-guide-grid">
+                <!-- Dynamically populated recipe cards -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Modal -->
+    <div class="modal-overlay" id="start-modal">
+        <div class="modal-card">
+            <h2>Barista Training</h2>
+            <p>Welcome to your shift! Read incoming order tickets carefully, select the right cup size, ingredients, and toppings in the correct sequential order, and submit before time runs out.</p>
+            <button class="modal-btn" onclick="startGame()">Start Shift</button>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal-overlay" id="gameover-modal" style="display: none;">
+        <div class="modal-card">
+            <h2>Shift Finished! ☕</h2>
+            <p id="final-stats-text">Great effort today! Let's see how many drinks you successfully completed.</p>
+            <button class="modal-btn" onclick="restartGame()">Start New Shift</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

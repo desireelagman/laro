@@ -1,0 +1,824 @@
+:root {
+    --sb-green: #006241;
+    --sb-dark-green: #1e3932;
+    --sb-accent-gold: #cba258;
+    --bg-cream: #f4f1de;
+    --card-white: #ffffff;
+    --text-main: #2b2b2b;
+    --text-muted: #666666;
+    --error-red: #d9534f;
+    --success-green: #5cb85c;
+    --wood-tone: #d4a373;
+
+    /* Drink-layer palette, one tone per ingredient family */
+    --layer-milk: #f6ecd9;
+    --layer-milk-text: #5b4636;
+    --layer-tea: #8a5a3b;
+    --layer-tea-text: #fbf2e9;
+    --layer-fruit: #e2637a;
+    --layer-fruit-text: #fff5f6;
+    --layer-syrup: #cf9a3e;
+    --layer-syrup-text: #3a2a10;
+    --layer-coffee: #3c2a21;
+    --layer-coffee-text: #f3e9df;
+    --layer-frapp: #b97a4b;
+    --layer-frapp-text: #fff8f1;
+    --layer-topping: #eef5f2;
+    --layer-topping-text: #33453e;
+    --layer-other: #d8d2c4;
+    --layer-other-text: #3a3630;
+
+    /* Slightly more saturated accents for sidebar category dots
+       (the pale layer colors above are tuned for text-on-fill, not dots) */
+    --accent-cup: var(--sb-accent-gold);
+    --accent-milk: #d8b26a;
+    --accent-topping: #7fa89b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-cream);
+    color: var(--text-main);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Top Bar */
+header {
+    background-color: var(--sb-dark-green);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 10;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    background-color: var(--sb-green);
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    border: 2px solid var(--sb-accent-gold);
+    flex-shrink: 0;
+}
+
+h1 {
+    font-size: 1.25rem;
+    letter-spacing: 0.5px;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+    display: flex;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px;
+    border-radius: 12px;
+    flex-wrap: wrap;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.nav-btn:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-btn.active {
+    background-color: var(--sb-green);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.stats-container {
+    display: flex;
+    gap: 24px;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-item span {
+    font-weight: bold;
+    color: var(--sb-accent-gold);
+    transition: color 0.2s ease;
+}
+
+/* View Sections Switcher */
+.view-section {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+}
+
+.view-section.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Game Layout */
+.game-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Learn Page Layout */
+.learn-container {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background: radial-gradient(circle, #f9f6f0 0%, #f0ebd8 100%);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.learn-container h2 {
+    color: var(--sb-dark-green);
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+}
+
+.learn-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    font-size: 1rem;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.recipe-guide-card {
+    background: var(--card-white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    border-top: 5px solid var(--sb-green);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recipe-guide-card h3 {
+    color: var(--sb-dark-green);
+    font-size: 1.2rem;
+}
+
+.recipe-guide-card ol {
+    padding-left: 20px;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Left Sidebar: Inventory */
+sidebar {
+    width: 320px;
+    flex-shrink: 0;
+    background-color: var(--card-white);
+    border-right: 2px solid #e0dbd1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    z-index: 5;
+}
+
+.sidebar-title {
+    background-color: #eae5d9;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--sb-dark-green);
+    border-bottom: 1px solid #dcd6c8;
+}
+
+.sidebar-search {
+    padding: 10px 12px;
+    background-color: #f4f1e8;
+    border-bottom: 1px solid #dcd6c8;
+}
+
+.sidebar-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #dcd6c8;
+    font-size: 0.85rem;
+    background: white;
+    color: var(--text-main);
+}
+
+.sidebar-search input:focus {
+    outline: none;
+    border-color: var(--sb-green);
+    box-shadow: 0 0 0 2px rgba(0,98,65,0.15);
+}
+
+.inventory-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+.inventory-category {
+    margin-bottom: 12px;
+    border-left: 3px solid var(--cat-accent, #dcd6c8);
+    padding-left: 10px;
+}
+
+.inventory-category summary {
+    list-style: none;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+}
+
+/* Hide default browser disclosure triangle and add a custom chevron */
+.inventory-category summary::-webkit-details-marker {
+    display: none;
+}
+
+.inventory-category summary h3 {
+    font-size: 0.78rem;
+    color: var(--text-main);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    letter-spacing: 0.4px;
+}
+
+/* Custom chevron rotation indicator */
+.inventory-category summary h3::after {
+    content: '▼';
+    margin-left: auto;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+.inventory-category[open] summary h3::after {
+    transform: rotate(180deg);
+}
+
+.inventory-category summary h3::before {
+    content: '';
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    background: var(--cat-accent, var(--text-muted));
+}
+
+.inventory-category .item-grid {
+    padding-top: 4px;
+    padding-bottom: 8px;
+}
+
+.cat-count {
+    margin-left: auto;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: #efece2;
+    border-radius: 10px;
+    padding: 1px 7px;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.cat-cup     { --cat-accent: var(--accent-cup); }
+.cat-milk    { --cat-accent: var(--accent-milk); }
+.cat-tea     { --cat-accent: var(--layer-tea); }
+.cat-fruit   { --cat-accent: var(--layer-fruit); }
+.cat-syrup   { --cat-accent: var(--layer-syrup); }
+.cat-coffee  { --cat-accent: var(--layer-coffee); }
+.cat-frapp   { --cat-accent: var(--layer-frapp); }
+.cat-topping { --cat-accent: var(--accent-topping); }
+
+.no-results-text {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 20px 8px;
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.ingredient-btn {
+    background-color: #f9f6f0;
+    border: 1px solid #e2dac9;
+    padding: 10px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.ingredient-btn:hover {
+    background-color: var(--sb-green);
+    color: white;
+    border-color: var(--sb-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,98,65,0.2);
+}
+
+.ingredient-btn:active {
+    transform: translateY(0);
+}
+
+.ingredient-btn small {
+    display: block;
+    font-weight: 400;
+    opacity: 0.75;
+    font-size: 0.7rem;
+}
+
+/* Right Content Area: Ticket & Workbench */
+.workspace {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    gap: 20px;
+    background: radial-gradient(circle, #f9f6f0 0%, #f0ebd8 100%);
+    overflow-y: auto;
+}
+
+/* Order Ticket Display */
+.ticket-card {
+    background-color: var(--card-white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+    border-top: 6px solid var(--sb-accent-gold);
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    transition: border-color 0.2s ease;
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 2px dashed #eee;
+    padding-bottom: 8px;
+}
+
+.ticket-title {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.drink-name {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--sb-dark-green);
+    margin-bottom: 8px;
+}
+
+.recipe-steps {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.recipe-steps li {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.recipe-steps li::before {
+    content: "•";
+    color: var(--sb-green);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Bottom Workbench / Hotbar */
+.workbench {
+    background-color: var(--card-white);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    border: 2px solid #e0dbd1;
+}
+
+.workbench-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.workbench-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--sb-dark-green);
+    text-transform: uppercase;
+}
+
+.workbench-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.workbench-progress {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--sb-dark-green);
+    background: #f1e9d8;
+    border: 1px solid #e4d7b8;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+/* ----- Assembly stage: a barista counter holding the cup ----- */
+.assembly-stage {
+    display: flex;
+    justify-content: center;
+    padding: 18px 0 10px;
+    background: linear-gradient(180deg, transparent 0%, transparent 78%, var(--wood-tone) 78%, #b98650 100%);
+    border-radius: 10px;
+}
+
+.cup-shell {
+    position: relative;
+    width: 210px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    transition: width 0.25s ease;
+}
+
+.cup-shell[data-size="tall"] { width: 170px; }
+.cup-shell[data-size="grande"] { width: 200px; }
+.cup-shell[data-size="venti"] { width: 232px; }
+
+.cup-rim {
+    background-color: var(--sb-dark-green);
+    border: 2px solid var(--sb-accent-gold);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+.cup-size-label {
+    color: var(--sb-accent-gold);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.cup-body {
+    position: relative;
+    min-height: 220px;
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    background: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0.15));
+    border-left: 2px solid rgba(255,255,255,0.6);
+    border-right: 2px solid rgba(0,0,0,0.08);
+    clip-path: polygon(6% 0%, 94% 0%, 88% 100%, 12% 100%);
+}
+
+.cup-base {
+    height: 10px;
+    background-color: #cbb99a;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 3px 4px rgba(0,0,0,0.15);
+}
+
+.empty-slot-text {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 20px 16px;
+    margin: auto;
+}
+
+/* Individual drink layer, one per ingredient, stacked bottom to top */
+.cup-layer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    background-color: var(--layer-other);
+    color: var(--layer-other-text);
+    animation: layerFill 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: nowrap;
+}
+
+.cup-layer.family-milk    { background-color: var(--layer-milk);    color: var(--layer-milk-text); }
+.cup-layer.family-tea     { background-color: var(--layer-tea);     color: var(--layer-tea-text); }
+.cup-layer.family-fruit   { background-color: var(--layer-fruit);   color: var(--layer-fruit-text); }
+.cup-layer.family-syrup   { background-color: var(--layer-syrup);   color: var(--layer-syrup-text); }
+.cup-layer.family-coffee  { background-color: var(--layer-coffee);  color: var(--layer-coffee-text); }
+.cup-layer.family-frapp   { background-color: var(--layer-frapp);   color: var(--layer-frapp-text); }
+.cup-layer.family-topping { background-color: var(--layer-topping); color: var(--layer-topping-text); }
+
+.cup-layer.layer-correct { box-shadow: inset 4px 0 0 var(--success-green); }
+.cup-layer.layer-wrong   { box-shadow: inset 4px 0 0 var(--error-red); }
+
+.layer-step {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.18);
+    color: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+}
+
+.layer-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.layer-status {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+}
+
+.layer-remove {
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.18);
+    border: none;
+    color: inherit;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.layer-remove:hover {
+    background: rgba(0,0,0,0.32);
+}
+
+@keyframes layerFill {
+    0% { transform: scaleY(0.4); opacity: 0; }
+    100% { transform: scaleY(1); opacity: 1; }
+}
+
+.workbench-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn-clear {
+    background-color: #e2dac9;
+    color: var(--text-main);
+}
+
+.btn-clear:hover {
+    background-color: #d2c8b3;
+}
+
+.btn-submit {
+    background-color: var(--sb-green);
+    color: white;
+}
+
+.btn-submit:hover {
+    background-color: var(--sb-dark-green);
+    box-shadow: 0 4px 10px rgba(0,98,65,0.3);
+}
+
+/* Overlay Modals */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-top: 6px solid var(--sb-green);
+}
+
+.modal-card h2 {
+    color: var(--sb-dark-green);
+    font-size: 1.6rem;
+}
+
+.modal-card p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.modal-btn {
+    background-color: var(--sb-green);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal-btn:hover {
+    background-color: var(--sb-dark-green);
+}
+
+/* Animations */
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
+.shake {
+    animation: shake 0.4s ease-in-out;
+    border-color: var(--error-red) !important;
+}
+
+.flash-success {
+    animation: flashSuccess 0.4s ease-in-out;
+}
+
+@keyframes flashSuccess {
+    0% { background-color: rgba(92, 184, 92, 0.2); }
+    100% { background-color: var(--card-white); }
+}
+
+/* Scrollbar aesthetics */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #dcd6c8;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #c5bdae;
+}
+
+/* Responsive: stack sidebar above workspace on narrow screens */
+@media (max-width: 800px) {
+    header {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .game-container {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    sidebar {
+        width: 100%;
+        max-height: 220px;
+    }
+
+    .inventory-scroll {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .inventory-category {
+        min-width: 220px;
+        margin-bottom: 0;
+    }
+
+    .workbench-actions {
+        justify-content: stretch;
+    }
+
+    .btn {
+        flex: 1;
+    }
+}
