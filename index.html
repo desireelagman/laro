@@ -196,8 +196,87 @@
         <div class="learn-container">
             <h2>Barista Recipe Master Guide</h2>
             <p class="learn-subtitle">Study the official recipe standards before stepping onto the active training floor.</p>
-            <div class="recipe-grid" id="recipe-guide-grid">
-                <!-- Dynamically populated recipe cards -->
+
+            <div class="learn-subtabs">
+                <button class="subtab-btn active" onclick="switchLearnPanel('cards', event)">📇 Study Cards</button>
+                <button class="subtab-btn" onclick="switchLearnPanel('memorize', event)">🎴 Memorize</button>
+                <button class="subtab-btn" onclick="switchLearnPanel('quiz', event)">🧠 Quiz Me</button>
+            </div>
+
+            <!-- Study Cards Panel -->
+            <div class="learn-panel active" id="learn-panel-cards">
+                <div class="recipe-grid" id="recipe-guide-grid">
+                    <!-- Dynamically populated recipe cards -->
+                </div>
+            </div>
+
+            <!-- Memorize / Flashcards Panel -->
+            <div class="learn-panel" id="learn-panel-memorize">
+                <div class="memorize-layout">
+                    <div class="memorize-list-col">
+                        <div class="memorize-progress-row">
+                            <span id="memorize-progress-text">0 / 0 memorized</span>
+                            <button class="btn-mini" onclick="shuffleMemorizeDeck()">🔀 Shuffle</button>
+                        </div>
+                        <div class="memorize-progress-bar"><div class="memorize-progress-fill" id="memorize-progress-fill"></div></div>
+                        <div class="memorize-list" id="memorize-list"></div>
+                    </div>
+
+                    <div class="memorize-card-col">
+                        <div class="flashcard" id="flashcard" onclick="flipFlashcard()">
+                            <div class="flashcard-inner" id="flashcard-inner">
+                                <div class="flashcard-face flashcard-front">
+                                    <span class="flashcard-hint">Tap card to reveal ingredients</span>
+                                    <h3 id="flashcard-front-name">Select a recipe</h3>
+                                </div>
+                                <div class="flashcard-face flashcard-back">
+                                    <h4 id="flashcard-back-name"></h4>
+                                    <ol id="flashcard-back-list"></ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flashcard-controls">
+                            <button class="btn btn-clear" onclick="prevFlashcard()">◀ Prev</button>
+                            <button class="btn btn-mark-learning" onclick="markFlashcard(false)">↻ Still Learning</button>
+                            <button class="btn btn-mark-learned" onclick="markFlashcard(true)">✓ Got It</button>
+                            <button class="btn btn-clear" onclick="nextFlashcard()">Next ▶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Panel -->
+            <div class="learn-panel" id="learn-panel-quiz">
+
+                <!-- Quiz Intro -->
+                <div class="quiz-intro-card" id="quiz-intro-card">
+                    <h3>Test Your Recipe Knowledge</h3>
+                    <p>Answer 10 quick multiple-choice questions matching drinks to their recipes and ingredient order.</p>
+                    <button class="modal-btn" onclick="startQuiz()">Start Quiz 🚀</button>
+                </div>
+
+                <!-- Active Quiz -->
+                <div class="quiz-active-card" id="quiz-active-card" style="display:none;">
+                    <div class="quiz-progress-row">
+                        <span id="quiz-progress-text">Question 1 / 10</span>
+                        <span id="quiz-score-text">Score: 0</span>
+                    </div>
+                    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+
+                    <div class="quiz-question" id="quiz-question-text"></div>
+                    <div class="quiz-options" id="quiz-options-grid"></div>
+
+                    <div class="quiz-feedback" id="quiz-feedback-text"></div>
+                    <button class="btn btn-submit" id="quiz-next-btn" style="display:none; align-self:flex-end;" onclick="nextQuizQuestion()">Next Question →</button>
+                </div>
+
+                <!-- Quiz Results -->
+                <div class="quiz-results-card" id="quiz-results-card" style="display:none;">
+                    <h3 id="quiz-results-title"></h3>
+                    <p id="quiz-results-text"></p>
+                    <button class="modal-btn" onclick="startQuiz()">Retake Quiz 🔁</button>
+                </div>
             </div>
         </div>
     </div>
