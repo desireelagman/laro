@@ -189,6 +189,29 @@ const simCupSizeLabel = document.getElementById('sim-cup-size-label');
 const simResultBox = document.getElementById('sim-result-box');
 const recipeGuideGrid = document.getElementById('recipe-guide-grid');
 
+// Quiz Mode DOM Elements
+const quizIntroCard = document.getElementById('quiz-intro-card');
+const quizActiveCard = document.getElementById('quiz-active-card');
+const quizResultsCard = document.getElementById('quiz-results-card');
+const quizProgressText = document.getElementById('quiz-progress-text');
+const quizScoreText = document.getElementById('quiz-score-text');
+const quizProgressFill = document.getElementById('quiz-progress-fill');
+const quizQuestionText = document.getElementById('quiz-question-text');
+const quizOptionsGrid = document.getElementById('quiz-options-grid');
+const quizFeedbackText = document.getElementById('quiz-feedback-text');
+const quizNextBtn = document.getElementById('quiz-next-btn');
+const quizResultsTitle = document.getElementById('quiz-results-title');
+const quizResultsText = document.getElementById('quiz-results-text');
+
+// Memorize Mode DOM Elements
+const memorizeListEl = document.getElementById('memorize-list');
+const memorizeProgressText = document.getElementById('memorize-progress-text');
+const memorizeProgressFill = document.getElementById('memorize-progress-fill');
+const flashcardInner = document.getElementById('flashcard-inner');
+const flashcardFrontName = document.getElementById('flashcard-front-name');
+const flashcardBackName = document.getElementById('flashcard-back-name');
+const flashcardBackList = document.getElementById('flashcard-back-list');
+
 // View Switcher Function (event passed explicitly, no reliance on implicit global)
 function switchView(viewName, evt) {
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -202,6 +225,21 @@ function switchView(viewName, evt) {
 
     if (viewName === 'learn') {
         renderRecipeGuide();
+    }
+}
+
+// Learn Page: switch between Study Cards and Quiz Me subtabs
+function switchLearnPanel(panelName, evt) {
+    document.querySelectorAll('.subtab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.learn-panel').forEach(panel => panel.classList.remove('active'));
+
+    const target = document.getElementById(`learn-panel-${panelName}`);
+    if (target) target.classList.add('active');
+    if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+
+    if (panelName === 'memorize') {
+        renderMemorizeList();
+        renderFlashcard();
     }
 }
 
@@ -466,6 +504,250 @@ document.addEventListener('keydown', (e) => {
         submitOrder();
     }
 });
+
+// ============================================================
+// QUIZ MODE (Quizlet-style multiple choice on the Learn page)
+// ============================================================
+const QUIZ_LENGTH = 10;
+let quizQuestions = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswerLocked = false;
+
+function shuffleArray(arr) {
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+}
+
+function formatIngredientList(ingredients) {
+    return ingredients.join(' → ');
+}
+
+// Builds a pool of two question types per recipe:
+//  - "ingredients": given a drink name, pick its correct ingredient sequence
+//  - "name": given an ingredient sequence, pick the drink it makes
+// Each question gets 3 wrong options drawn from other random recipes.
+function buildQuizPool() {
+    const pool = [];
+
+    recipeTemplates.forEach((template) => {
+        const otherTemplates = recipeTemplates.filter(t => t.baseName !== template.baseName);
+
+        const wrongIngredientSets = shuffleArray(otherTemplates)
+            .slice(0, 3)
+            .map(t => formatIngredientList(t.baseIngredients));
+
+        pool.push({
+            type: 'ingredients',
+            prompt: `Which ingredient sequence makes a ${template.baseName}?`,
+            correctText: formatIngredientList(template.baseIngredients),
+            optionTexts: shuffleArray([formatIngredientList(template.baseIngredients), ...wrongIngredientSets])
+        });
+
+        const wrongNames = shuffleArray(otherTemplates)
+            .slice(0, 3)
+            .map(t => t.baseName);
+
+        pool.push({
+            type: 'name',
+            prompt: `What drink is made from: ${formatIngredientList(template.baseIngredients)}?`,
+            correctText: template.baseName,
+            optionTexts: shuffleArray([template.baseName, ...wrongNames])
+        });
+    });
+
+    return pool;
+}
+
+function startQuiz() {
+    const pool = shuffleArray(buildQuizPool());
+    quizQuestions = pool.slice(0, Math.min(QUIZ_LENGTH, pool.length));
+    quizIndex = 0;
+    quizScore = 0;
+
+    quizIntroCard.style.display = 'none';
+    quizResultsCard.style.display = 'none';
+    quizActiveCard.style.display = 'flex';
+
+    renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+    quizAnswerLocked = false;
+    const q = quizQuestions[quizIndex];
+
+    quizProgressText.textContent = `Question ${quizIndex + 1} / ${quizQuestions.length}`;
+    quizScoreText.textContent = `Score: ${quizScore}`;
+    quizProgressFill.style.width = `${(quizIndex / quizQuestions.length) * 100}%`;
+
+    quizQuestionText.textContent = q.prompt;
+    quizFeedbackText.textContent = '';
+    quizFeedbackText.className = 'quiz-feedback';
+    quizNextBtn.style.display = 'none';
+
+    quizOptionsGrid.innerHTML = '';
+    q.optionTexts.forEach((optionText) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        btn.textContent = optionText;
+        btn.onclick = () => selectQuizAnswer(optionText, btn);
+        quizOptionsGrid.appendChild(btn);
+    });
+}
+
+function selectQuizAnswer(chosenText, btnEl) {
+    if (quizAnswerLocked) return;
+    quizAnswerLocked = true;
+
+    const q = quizQuestions[quizIndex];
+    const isCorrect = chosenText === q.correctText;
+
+    document.querySelectorAll('.quiz-option-btn').forEach((btn) => {
+        btn.disabled = true;
+        if (btn.textContent === q.correctText) {
+            btn.classList.add('quiz-option-correct');
+        } else if (btn === btnEl) {
+            btn.classList.add('quiz-option-wrong');
+        }
+    });
+
+    if (isCorrect) {
+        quizScore++;
+        quizFeedbackText.textContent = '✓ Correct!';
+        quizFeedbackText.classList.add('quiz-feedback-correct');
+    } else {
+        quizFeedbackText.textContent = `✕ Not quite — correct answer: ${q.correctText}`;
+        quizFeedbackText.classList.add('quiz-feedback-wrong');
+    }
+
+    quizScoreText.textContent = `Score: ${quizScore}`;
+    quizNextBtn.style.display = 'inline-block';
+    quizNextBtn.textContent = (quizIndex === quizQuestions.length - 1) ? 'See Results 🏁' : 'Next Question →';
+}
+
+function nextQuizQuestion() {
+    quizIndex++;
+    if (quizIndex >= quizQuestions.length) {
+        showQuizResults();
+    } else {
+        renderQuizQuestion();
+    }
+}
+
+function showQuizResults() {
+    quizActiveCard.style.display = 'none';
+    quizResultsCard.style.display = 'flex';
+    quizProgressFill.style.width = '100%';
+
+    const pct = Math.round((quizScore / quizQuestions.length) * 100);
+    let verdict = 'Keep practicing — run it back and lock those recipes in!';
+    if (pct === 100) verdict = 'Perfect score! You know your recipes cold. ☕🏆';
+    else if (pct >= 80) verdict = "Excellent! You're nearly a recipe master.";
+    else if (pct >= 50) verdict = "Good effort — a bit more study and you'll have it down.";
+
+    quizResultsTitle.textContent = `You scored ${quizScore} / ${quizQuestions.length} (${pct}%)`;
+    quizResultsText.textContent = verdict;
+}
+
+// ============================================================
+// MEMORIZE MODE (flip flashcards, one recipe at a time)
+// ============================================================
+const MEMORIZED_KEY = 'baristaMemorizedRecipes';
+let memorizeDeck = [...recipeTemplates];
+let memorizeIndex = 0;
+let memorizedSet = new Set(JSON.parse(localStorage.getItem(MEMORIZED_KEY) || '[]'));
+let flashcardFlipped = false;
+
+function saveMemorizedSet() {
+    localStorage.setItem(MEMORIZED_KEY, JSON.stringify([...memorizedSet]));
+}
+
+// Renders the clickable list of recipe names down the side, with a
+// checkmark on anything already marked "Got It".
+function renderMemorizeList() {
+    memorizeListEl.innerHTML = '';
+
+    memorizeDeck.forEach((template, idx) => {
+        const isLearned = memorizedSet.has(template.baseName);
+        const chip = document.createElement('button');
+        chip.className = 'memorize-chip' + (idx === memorizeIndex ? ' active' : '') + (isLearned ? ' learned' : '');
+        chip.innerHTML = `<span>${template.baseName}</span>${isLearned ? '<span class="chip-check">✓</span>' : ''}`;
+        chip.onclick = () => selectFlashcard(idx);
+        memorizeListEl.appendChild(chip);
+    });
+
+    const total = memorizeDeck.length;
+    const learnedCount = memorizeDeck.filter(t => memorizedSet.has(t.baseName)).length;
+    memorizeProgressText.textContent = `${learnedCount} / ${total} memorized`;
+    memorizeProgressFill.style.width = total ? `${(learnedCount / total) * 100}%` : '0%';
+}
+
+// Fills in the front/back of the flashcard for the current deck position.
+function renderFlashcard() {
+    const template = memorizeDeck[memorizeIndex];
+    if (!template) return;
+
+    flashcardFrontName.textContent = template.baseName;
+    flashcardBackName.textContent = template.baseName;
+    flashcardBackList.innerHTML =
+        `<li>[Tall / Grande / Venti] Cup</li>` +
+        template.baseIngredients.map(ing => `<li>${ing}</li>`).join('');
+
+    flashcardInner.classList.toggle('flipped', flashcardFlipped);
+}
+
+function flipFlashcard() {
+    flashcardFlipped = !flashcardFlipped;
+    flashcardInner.classList.toggle('flipped', flashcardFlipped);
+}
+
+function selectFlashcard(idx) {
+    memorizeIndex = idx;
+    flashcardFlipped = false;
+    renderFlashcard();
+    renderMemorizeList();
+}
+
+function prevFlashcard() {
+    memorizeIndex = (memorizeIndex - 1 + memorizeDeck.length) % memorizeDeck.length;
+    flashcardFlipped = false;
+    renderFlashcard();
+    renderMemorizeList();
+}
+
+function nextFlashcard() {
+    memorizeIndex = (memorizeIndex + 1) % memorizeDeck.length;
+    flashcardFlipped = false;
+    renderFlashcard();
+    renderMemorizeList();
+}
+
+// "Got It" / "Still Learning" tags the current card, saves it, then
+// automatically moves on to the next one so studying flows continuously.
+function markFlashcard(learned) {
+    const template = memorizeDeck[memorizeIndex];
+    if (!template) return;
+
+    if (learned) {
+        memorizedSet.add(template.baseName);
+    } else {
+        memorizedSet.delete(template.baseName);
+    }
+    saveMemorizedSet();
+    nextFlashcard();
+}
+
+function shuffleMemorizeDeck() {
+    memorizeDeck = shuffleArray(recipeTemplates);
+    memorizeIndex = 0;
+    flashcardFlipped = false;
+    renderFlashcard();
+    renderMemorizeList();
+}
 
 // Initialize best-score display on load
 updateBestDisplay();
