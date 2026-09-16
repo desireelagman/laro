@@ -21,7 +21,6 @@
         <!-- Mode Navigation Tabs -->
         <nav class="nav-tabs">
             <button class="nav-btn active" onclick="switchView('game', event)">🎮 Training Game</button>
-            <button class="nav-btn" onclick="switchView('simulator', event)">🧪 Free Simulator</button>
             <button class="nav-btn" onclick="switchView('learn', event)">📖 Learn Recipes</button>
         </nav>
 
@@ -192,100 +191,7 @@
         </div>
     </div>
 
-    <!-- VIEW 2: FREE SIMULATOR (SANDBOX) -->
-    <div class="view-section" id="view-simulator">
-        <div class="game-container">
-            <sidebar>
-                <div class="sidebar-title">Simulator Inventory</div>
-                <div class="sidebar-search">
-                    <input type="text" id="sim-ingredient-search" placeholder="🔍 Search ingredients…" oninput="filterIngredients('sim', this.value)">
-                </div>
-                <div class="inventory-scroll" id="inventory-scroll-sim">
-                    <div class="inventory-category cat-cup">
-                        <h3>Cups <span class="cat-count">3</span></h3>
-                        <div class="item-grid">
-                            <button class="ingredient-btn" onclick="addSimIngredient('Tall Cup')">🥤 Tall Cup</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Grande Cup')">🥤 Grande Cup</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Venti Cup')">🥤 Venti Cup</button>
-                        </div>
-                    </div>
-                    <div class="inventory-category cat-milk">
-                        <h3>Bases / Milks <span class="cat-count">4</span></h3>
-                        <div class="item-grid">
-                            <button class="ingredient-btn" onclick="addSimIngredient('Milk')">🥛 Milk</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Oat Milk')">🌾 Oat Milk</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Almond Milk')">🌰 Almond Milk</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Water')">💧 Water</button>
-                        </div>
-                    </div>
-                    <div class="inventory-category cat-syrup">
-                        <h3>Syrups <span class="cat-count">3</span></h3>
-                        <div class="item-grid">
-                            <button class="ingredient-btn" onclick="addSimIngredient('Vanilla Syrup')">🍯 Vanilla Syrup</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Caramel Syrup')">🍮 Caramel Syrup</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Hazelnut Syrup')">🌰 Hazelnut Syrup</button>
-                        </div>
-                    </div>
-                    <div class="inventory-category cat-coffee">
-                        <h3>Powders / Roast <span class="cat-count">3</span></h3>
-                        <div class="item-grid">
-                            <button class="ingredient-btn" onclick="addSimIngredient('Matcha Powder')">🍵 Matcha Powder</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Mocha Powder')">🍫 Mocha Powder</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Frappuccino Roast')">⚡ Frappuccino Roast</button>
-                        </div>
-                    </div>
-                    <div class="inventory-category cat-topping">
-                        <h3>Toppings <span class="cat-count">3</span></h3>
-                        <div class="item-grid">
-                            <button class="ingredient-btn" onclick="addSimIngredient('Whipped Cream')">☁️ Whipped Cream</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Caramel Drizzle')">✨ Caramel Drizzle</button>
-                            <button class="ingredient-btn" onclick="addSimIngredient('Frapp Chips')">🍪 Frapp Chips</button>
-                        </div>
-                    </div>
-                    <p class="no-results-text" id="no-results-sim" style="display:none;">No ingredients match your search.</p>
-                </div>
-            </sidebar>
-
-            <div class="workspace">
-                <div class="ticket-card">
-                    <div class="ticket-header">
-                        <span class="ticket-title">Sandbox Mode</span>
-                    </div>
-                    <div class="drink-name">Free Barista Station</div>
-                    <p style="color: var(--text-muted); font-size: 0.95rem;">Experiment freely! Combine any ingredients to test recipe ideas without time restrictions or penalties.</p>
-                </div>
-
-                <div class="workbench">
-                    <div class="workbench-header">
-                        <div>
-                            <span class="workbench-title">Custom Creation Workbench</span>
-                            <div class="workbench-subtitle">No required order — experiment freely</div>
-                        </div>
-                    </div>
-
-                    <div class="assembly-stage">
-                        <div class="cup-shell" id="sim-cup-shell" data-size="none">
-                            <div class="cup-rim">
-                                <span class="cup-size-label" id="sim-cup-size-label">Select a cup</span>
-                            </div>
-                            <div class="cup-body" id="sim-build-slots">
-                                <span class="empty-slot-text">Workspace empty. Build your custom drink!</span>
-                            </div>
-                            <div class="cup-base"></div>
-                        </div>
-                    </div>
-
-                    <div class="workbench-actions">
-                        <button class="btn btn-clear" onclick="clearSimWorkbench()">Clear Workspace</button>
-                        <button class="btn btn-submit" onclick="testSimRecipe()">Inspect Drink 🔍</button>
-                    </div>
-                    <div id="sim-result-box" style="margin-top: 10px; font-weight: bold; color: var(--sb-green); text-align: center;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- VIEW 3: LEARN / RECIPE GUIDE -->
+    <!-- VIEW 2: LEARN / RECIPE GUIDE -->
     <div class="view-section" id="view-learn">
         <div class="learn-container">
             <h2>Barista Recipe Master Guide</h2>
